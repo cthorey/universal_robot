@@ -1,0 +1,9 @@
+<launch>
+
+  <!-- Launch a simulated robot in gazebo -->
+  <include file="$(find ur_gazebo)/launch/ur5.launch">
+    <arg name="limited" value="true"/>
+    <arg name="world_name" value="$(find ur5)/worlds/simulated_world.world"/>
+  </include>
+  
+</launch>

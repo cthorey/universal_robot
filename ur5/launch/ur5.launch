@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <!-- GUI arguments -->
+  <arg name="simulation" default="false" doc="if true, launch a simulated version of the robot" />
+  <arg name="robot_ip" default="192.168.1.148" doc="IP of the robot if running off sim"/>
+  <arg name="limited" default="true" doc="if true, limit joint movement." />
+  <arg name="sensor_manager" default="false" doc="produce octomap from kinect" />
+  <arg name="world_name" default="simulated_world" doc="Name of the simulated world you want to launch" />
+  <arg name="start_rviz" default="true" doc="if true, rviz will be started with the provided config file" />
+  <arg name="rviz_config_file" default="$(find ur5)/rviz/config.rviz" doc="the path to the rviz config file to be opened" />
+
+  <!--  Start gazebo if in simulation mode is set to True -->
+  <include  if="$(arg simulation)" file="$(find ur_gazebo)/launch/ur5.launch">
+    <arg name="limited" value="true"/>
+    <arg name="world_name" value="$(find ur5)/worlds/$(arg world_name).world"/>
+  </include>
+
+  <!--  Else use the moder driver to communictate directly to the robot -->
+  <include unless="$(arg simulation)" file="$(find ur_modern_driver)/launch/ur5_bringup_joint_limited.launch">
+    <arg name="robot_ip" value="$(arg robot_ip)"/>
+  </include>
+
+
+  <!-- Start moveit! -->
+  <include file="$(find ur5_moveit_config)/launch/ur5_moveit_planning_execution.launch">
+    <arg name="limited" value="true" />
+    <arg name="sim" value="$(arg simulation)"/>
+    <arg name="sensor_manager" value="$(arg sensor_manager)" />
+  </include>
+  
+  <!-- start rviz -->
+  <node if="$(arg start_rviz)" name="$(anon rviz)" pkg="rviz" type="rviz" respawn="true" 
+        args="-d $(arg rviz_config_file)" output="screen" />
+
+</launch>

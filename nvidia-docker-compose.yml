@@ -1,0 +1,55 @@
+services:
+  rosmaster:
+    command:
+    - roscore
+    container_name: rosmaster
+    devices:
+    - /dev/nvidia0
+    - /dev/nvidiactl
+    - /dev/nvidia-uvm
+    - /dev/nvidia-uvm-tools
+    image: xihelm/kinetic:kinect
+    ports:
+    - 11311:11311
+    volumes:
+    - nvidia_driver_375.66:/usr/local/nvidia:ro
+  universal_robot:
+    build:
+      args:
+        host_ip: 192.168.1.133
+      context: .
+    command: roslaunch ur5 ur5.launch simulation:="true" limited:="true"
+    container_name: universal_robot
+    depends_on:
+    - rosmaster
+    devices:
+    - /dev/nvidia0
+    - /dev/nvidiactl
+    - /dev/nvidia-uvm
+    - /dev/nvidia-uvm-tools
+    environment:
+    - DISPLAY=$DISPLAY
+    - QT_X11_NO_MITSHM=1
+    - ROS_HOSTNAME=universal_robot
+    - ROS_MASTER_URI=http://rosmaster:11311
+    - PATH=/usr/local/nvidia/bin:${PATH}
+    - LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH}
+    - UR_IP=192.168.1.148
+    hostname: universal_robot
+    labels:
+    - com.nvidia.volumes.needed="nvidia_driver"
+    ports:
+    - 50007:50007
+    - 50001:50001
+    - 30002:30002
+    privileged: true
+    volumes:
+    - /dev/bus/usb:/dev/bus/usb
+    - /etc/udev/rules.d:/etc/udev/rules.d
+    - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    - $PWD:/catkin_ws/src/universal_robot
+    - nvidia_driver_375.66:/usr/local/nvidia:ro
+version: '2'
+volumes:
+  nvidia_driver_375.66:
+    external: true
