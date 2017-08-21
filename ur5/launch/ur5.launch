@@ -8,6 +8,7 @@
   <arg name="limited" default="true" doc="if true, limit joint movement." />
   <arg name="sensor_manager" default="false" doc="produce octomap from kinect" />
   <arg name="world_name" default="simulated_world" doc="Name of the simulated world you want to launch" />
+  <arg name="start_moveit" default="true" doc="if true, start moveit" />
   <arg name="start_rviz" default="true" doc="if true, rviz will be started with the provided config file" />
   <arg name="rviz_config_file" default="$(find ur5)/rviz/config.rviz" doc="the path to the rviz config file to be opened" />
 
@@ -24,7 +25,7 @@
 
 
   <!-- Start moveit! -->
-  <include file="$(find ur5_moveit_config)/launch/ur5_moveit_planning_execution.launch">
+  <include if="$(arg start_rviz)" file="$(find ur5_moveit_config)/launch/ur5_moveit_planning_execution.launch">
     <arg name="limited" value="true" />
     <arg name="sim" value="$(arg simulation)"/>
     <arg name="sensor_manager" value="$(arg sensor_manager)" />
