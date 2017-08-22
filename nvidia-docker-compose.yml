@@ -18,7 +18,7 @@ services:
       args:
         host_ip: 192.168.1.133
       context: .
-    command: roslaunch ur5 ur5.launch simulation:="true" limited:="true"
+    command: roslaunch ur5 ur5.launch simulation:="true" limited:="true" world_name:="empty_world"
     container_name: universal_robot
     depends_on:
     - rosmaster

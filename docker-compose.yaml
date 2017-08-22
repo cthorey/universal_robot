@@ -1,6 +1,28 @@
 version: "2"
 
 services:
+  kinect2:
+    build: ../src/ros_pkg/iai_kinect2
+    labels:
+      - com.nvidia.volumes.needed="nvidia_driver"
+    container_name: kinect2
+    hostname: kinect2
+    privileged: true
+    environment:
+      - "DISPLAY=$DISPLAY"
+      - "ROS_HOSTNAME=kinect2"
+      - "ROS_MASTER_URI=http://rosmaster:11311"
+      - "PATH=/usr/local/nvidia/bin:${PATH}"
+      - "LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH}"
+      - "QT_X11_NO_MITSHM=1"
+    volumes:
+      - "/dev/bus/usb:/dev/bus/usb"
+      - "/etc/udev/rules.d:/etc/udev/rules.d"
+      - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
+    command: roslaunch kinect2_bridge kinect2_bridge.launch publish_tf:=true
+    depends_on:
+      - rosmaster
+
   universal_robot:
     build:
       context: .
@@ -28,7 +50,7 @@ services:
       - "/etc/udev/rules.d:/etc/udev/rules.d"
       - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
       - "$PWD:/catkin_ws/src/universal_robot"
-    command: roslaunch ur5 ur5.launch simulation:="true" limited:="true"
+    command: roslaunch ur5 ur5.launch simulation:="true" limited:="true" world_name:="empty_world"
     depends_on:
       - rosmaster
 

@@ -27,11 +27,12 @@ RUN source "/opt/ros/kinetic/setup.bash" &&\
 
 COPY . /catkin_ws/src/universal_robot
 
-# # python package
+RUN cd /catkin_ws/src &&\
+    git clone https://github.com/shadow-robot/pysdf.git &&\
+    git clone -b F_add_moveit_funtionallity https://github.com/shadow-robot/gazebo2rviz.git
 
-ADD get_pip.py /get_pip.py
-RUN python get_pip.py
-RUN pip install ipython
+# # python package
+RUN curl https://bootstrap.pypa.io/get-pip.py | python
 
 # https://github.com/ros-planning/moveit/issues/86#issuecomment-290319557
 # trick to fix a bug in moveitcontroller
@@ -40,7 +41,9 @@ RUN pip install pyassimp
 
 # Needed to see the position_controllers/JointTrajectoryController
 RUN apt-get update &&\
-    apt-get install -y ros-kinetic-joint-trajectory-controller
+    apt-get install -y ros-kinetic-joint-trajectory-controller &&\
+    apt-get install -y ros-kinetic-gazebo-ros-pkgs &&\
+    apt-get install -y ros-kinetic-gazebo-ros-control
 
 # this variable is passed in the ur_modern_driver and represent the IP OF THE HOST. Necessaru
 # for the robot to communicate properly, see https://github.com/ThomasTimm/ur_modern_driver/issues/111

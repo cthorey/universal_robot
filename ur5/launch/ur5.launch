@@ -23,6 +23,11 @@
     <arg name="robot_ip" value="$(arg robot_ip)"/>
   </include>
 
+  <!-- <include file="$(find gazebo2rviz)/launch/gazebo2rviz.launch"> -->
+  <!--   <env name="MESH_WORKSPACE_PATH" value="/catkin_ws/src/"/> -->
+  <!--   <arg name="marker_collision" value="true" /> -->
+  <!--   <arg name="marker_frequency" value="0.5" /> -->
+  <!-- </include> -->
 
   <!-- Start moveit! -->
   <include if="$(arg start_rviz)" file="$(find ur5_moveit_config)/launch/ur5_moveit_planning_execution.launch">
@@ -30,7 +35,7 @@
     <arg name="sim" value="$(arg simulation)"/>
     <arg name="sensor_manager" value="$(arg sensor_manager)" />
   </include>
-  
+
   <!-- start rviz -->
   <node if="$(arg start_rviz)" name="$(anon rviz)" pkg="rviz" type="rviz" respawn="true" 
         args="-d $(arg rviz_config_file)" output="screen" />

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<launch>
+    <include file="$(find gazebo2rviz)/launch/gazebo2moveit.launch">
+       <env name="GAZEBO_MODEL_PATH" value="~/.gazebo/models:${GAZEBO_MODEL_PATH}"/>
+       <env name="MESH_WORKSPACE_PATH" value="/catkin_ws/src"/>
+  </include>
+</launch>
